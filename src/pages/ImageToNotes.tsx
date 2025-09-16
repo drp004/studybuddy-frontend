@@ -416,7 +416,18 @@ export function ImageToNotes() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      // Defensive: check for empty response
+      const text = await response.text();
+      if (!text || text.trim() === '') {
+        throw new Error('Empty response from server');
+      }
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (err) {
+        throw new Error('Invalid JSON response from server');
+      }
       
       if (result.success && result.data) {
         console.log('🔍 Full API result:', result);
