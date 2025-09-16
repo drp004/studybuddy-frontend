@@ -4,7 +4,7 @@ import { BookOpen as LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface FeatureCardProps {
-  icon: LucideIcon;
+  icon: typeof LucideIcon;
   title: string;
   description: string;
   index: number;

@@ -38,41 +38,47 @@ interface EnhancedAudioNotes {
     duration?: string;
     category: string;
     difficulty: string;
+    contentType?: string; // Added missing field
   };
   audioOverview?: {
     description: string;
-    mainPurpose: string;
-    targetAudience: string;
+    mainPurpose?: string; // Made optional for consistency
+    targetAudience?: string;
+    mainTopic?: string; // Added for print template compatibility
   };
   keyTopicsCovered?: string[];
   speakersAndParticipants?: Array<{
     name: string;
-    role: string;
+    role?: string; // Made optional for robustness
     keyContributions: string;
   }>;
   coreConceptsDefinitions?: Array<{
     term: string;
     definition: string;
-    importance: string;
+    importance?: string; // Made optional for robustness
   }>;
   detailedAnalysis?: {
-    stepByStepExplanation: string[];
-    examples: string[];
-    practicalApplications: string[];
+    stepByStepExplanation?: string[]; // Made optional for robustness
+    examples?: string[];
+    practicalApplications?: string[];
+    mainPoints?: string[]; // Added for print template compatibility
+    actionableInsights?: string[]; // Added for print template compatibility
   };
   keyTakeaways?: {
-    mainPoints: string[];
-    actionableInsights: string[];
-    practicalTips: string[];
+    mainPoints?: string[];
+    actionableInsights?: string[];
+    practicalTips?: string[];
+    mainInsights?: string[]; // Added for print template compatibility
+    practicalApplications?: string[]; // Added for print template compatibility
   };
   additionalResources?: {
-    relatedTopics: string[];
-    suggestedReading: string[];
-    furtherLearning: string[];
+    relatedTopics?: string[];
+    suggestedReading?: string[];
+    furtherLearning?: string[];
   };
   transcript?: {
-    fullTranscript: string;
-    keyQuotes: string[];
+    fullTranscript?: string;
+    keyQuotes?: string[];
     speakerSegments?: string;
   };
   originalContent?: {
@@ -746,7 +752,7 @@ export function AudioToNotes() {
   // Enhanced print function for structured notes
   const handleEnhancedPrint = () => {
     if (!enhancedNotes) return;
-    
+
     const printContent = `
       <!DOCTYPE html>
       <html>
@@ -832,6 +838,7 @@ export function AudioToNotes() {
               <h3>Overview</h3>
               <p>${enhancedNotes.audioOverview.description}</p>
               ${enhancedNotes.audioOverview.mainTopic ? `<p><strong>Main Topic:</strong> ${enhancedNotes.audioOverview.mainTopic}</p>` : ''}
+              ${enhancedNotes.audioOverview.mainPurpose ? `<p><strong>Main Purpose:</strong> ${enhancedNotes.audioOverview.mainPurpose}</p>` : ''}
               ${enhancedNotes.audioOverview.targetAudience ? `<p><strong>Target Audience:</strong> ${enhancedNotes.audioOverview.targetAudience}</p>` : ''}
             </div>
           ` : ''}
@@ -867,6 +874,18 @@ export function AudioToNotes() {
                 <h4>Actionable Insights</h4>
                 ${enhancedNotes.detailedAnalysis.actionableInsights.map(insight => `<div class="list-item">• ${insight}</div>`).join('')}
               ` : ''}
+              ${enhancedNotes.detailedAnalysis.stepByStepExplanation && enhancedNotes.detailedAnalysis.stepByStepExplanation.length > 0 ? `
+                <h4>Step-by-Step Explanation</h4>
+                ${enhancedNotes.detailedAnalysis.stepByStepExplanation.map(step => `<div class="list-item">• ${step}</div>`).join('')}
+              ` : ''}
+              ${enhancedNotes.detailedAnalysis.examples && enhancedNotes.detailedAnalysis.examples.length > 0 ? `
+                <h4>Examples</h4>
+                ${enhancedNotes.detailedAnalysis.examples.map(example => `<div class="list-item">• ${example}</div>`).join('')}
+              ` : ''}
+              ${enhancedNotes.detailedAnalysis.practicalApplications && enhancedNotes.detailedAnalysis.practicalApplications.length > 0 ? `
+                <h4>Practical Applications</h4>
+                ${enhancedNotes.detailedAnalysis.practicalApplications.map(app => `<div class="list-item">• ${app}</div>`).join('')}
+              ` : ''}
             </div>
           ` : ''}
           
@@ -876,6 +895,18 @@ export function AudioToNotes() {
               ${enhancedNotes.keyTakeaways.mainInsights && enhancedNotes.keyTakeaways.mainInsights.length > 0 ? `
                 <h4>Main Insights</h4>
                 ${enhancedNotes.keyTakeaways.mainInsights.map(insight => `<div class="list-item">• ${insight}</div>`).join('')}
+              ` : ''}
+              ${enhancedNotes.keyTakeaways.mainPoints && enhancedNotes.keyTakeaways.mainPoints.length > 0 ? `
+                <h4>Main Points</h4>
+                ${enhancedNotes.keyTakeaways.mainPoints.map(point => `<div class="list-item">• ${point}</div>`).join('')}
+              ` : ''}
+              ${enhancedNotes.keyTakeaways.actionableInsights && enhancedNotes.keyTakeaways.actionableInsights.length > 0 ? `
+                <h4>Actionable Insights</h4>
+                ${enhancedNotes.keyTakeaways.actionableInsights.map(insight => `<div class="list-item">• ${insight}</div>`).join('')}
+              ` : ''}
+              ${enhancedNotes.keyTakeaways.practicalTips && enhancedNotes.keyTakeaways.practicalTips.length > 0 ? `
+                <h4>Practical Tips</h4>
+                ${enhancedNotes.keyTakeaways.practicalTips.map(tip => `<div class="list-item">• ${tip}</div>`).join('')}
               ` : ''}
               ${enhancedNotes.keyTakeaways.practicalApplications && enhancedNotes.keyTakeaways.practicalApplications.length > 0 ? `
                 <h4>Practical Applications</h4>
@@ -900,7 +931,7 @@ export function AudioToNotes() {
         </body>
       </html>
     `;
-    
+
     const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(printContent);
