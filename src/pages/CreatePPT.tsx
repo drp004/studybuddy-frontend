@@ -41,6 +41,7 @@ export function CreatePPT() {
       });
       
       console.log('📥 Backend response status:', response.status);
+      console.log('Response text:', response.text());
       
       if (!response.ok) {
         const errorText = await response.text();
