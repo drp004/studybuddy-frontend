@@ -1,8 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://studybuddy-backend-mc3g.onrender.com';
+// 🔹 Decide which base URL to use
+const API_BASE_URL =
+  // 1️⃣ Use env var if present (Render build)
+  import.meta.env.VITE_API_URL
+    // 2️⃣ If no env and we're in dev, keep empty string
+    ?? (import.meta.env.DEV ? '' : 'https://studybuddy-backend-mc3g.onrender.com');
 
-export const apiClient = axios.create({
+// 👉 If API_BASE_URL === '' in dev, axios will call relative /api/*
+//    and Vite's proxy will forward it to your backend.
+
+console.log('➡️ Axios baseURL:', API_BASE_URL);
+
+const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
@@ -10,7 +20,7 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor
+// ---- Request interceptor ----
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
@@ -19,12 +29,10 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// ---- Response interceptor ----
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -36,4 +44,4 @@ apiClient.interceptors.response.use(
   }
 );
 
-export default apiClient; 
+export default apiClient;
