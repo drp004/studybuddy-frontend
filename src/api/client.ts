@@ -1,11 +1,7 @@
 import axios from 'axios';
 
 // 🔹 Decide which base URL to use
-const API_BASE_URL =
-  // 1️⃣ Use env var if present (Render build)
-  import.meta.env.VITE_API_URL
-    // 2️⃣ If no env and we're in dev, keep empty string
-    ?? (import.meta.env.DEV ? '' : 'https://studybuddy-backend-mc3g.onrender.com');
+const API_BASE_URL = 'https://studybuddy-backend-mc3g.onrender.com'
 
 // 👉 If API_BASE_URL === '' in dev, axios will call relative /api/*
 //    and Vite's proxy will forward it to your backend.
